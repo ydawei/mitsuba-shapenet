@@ -50,6 +50,9 @@ struct TriAccel {
 	uint32_t shapeIndex;
 	uint32_t primIndex;
 
+	/// Modified by Jian: keep face normal
+	Vector N;
+
 	/// Construct from vertex data. Returns '1' if there was a failure
 	inline int load(const Point &A, const Point &B, const Point &C);
 
@@ -61,7 +64,11 @@ struct TriAccel {
 inline int TriAccel::load(const Point &A, const Point &B, const Point &C) {
 	static const int waldModulo[4] = { 1, 2, 0, 1 };
 
-	Vector b = C-A, c = B-A, N = cross(c, b);
+	//Vector b = C-A, c = B-A, N = cross(c, b);
+	/// modified by Jian: keep face normal
+	Vector b = C - A, c = B - A;
+	N = cross(c, b);
+
 
 	k = 0;
 	/* Determine the largest projection axis */
@@ -95,6 +102,10 @@ inline int TriAccel::load(const Point &A, const Point &B, const Point &C) {
 
 FINLINE bool TriAccel::rayIntersect(const Ray &ray, Float mint, Float maxt,
 	Float &u, Float &v, Float &t) const {
+
+	/// Modified by Jian: skip back-face
+	if (dot(N, ray.d) > 0.f)
+		return false;
 
 #if 0
 	static const MM_ALIGN16 int waldModulo[4] = { 1, 2, 0, 1 };
