@@ -16,6 +16,7 @@ There is no vertex normal information included in ShapeNet dataset, so it would 
 
 A sample rendering configuration render.xml:
 
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 
 <scene version="0.5.0">
@@ -47,3 +48,4 @@ A sample rendering configuration render.xml:
 		</film>
 	</sensor>
 </scene>
+```
