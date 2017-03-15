@@ -1,8 +1,8 @@
 # mitsuba-shapenet
 
-Most ShapeNet models are exported from SketchUp with double-faces. In original Mitsuba renderer without back-face culling, there are black pixels when intersecting the 'back side' face. 
+Most ShapeNet models are exported from SketchUp with double-faces. In original Mitsuba renderer without back-face culling, there are black pixels when intersecting the 'back side' face. There are also some categories, such as cars, are not double-sided. Some of them only have flipped faces, which makes backface culling not work.
 
-This fork simply modified the 'TriAccel' structure used for ray-triangle intersection. Face normal is used to decide whether the ray could hit the back side.
+This fork simply implements a 'shapenet' shape importer. It reads model and material from ShapeNet .obj files and assign them with proper 'twosided' BSDF.
 
 For more details about mitsuba renderer, please visit its homepage at https://www.mitsuba-renderer.org/ .
 
@@ -12,7 +12,7 @@ On Windows, you can simply put the dependencies_windows repo under the project f
 
 If you meet the problem of missing header such as mitsuba_precompiled_header.hpp, please turn off MTS_USE_PCH flag during CMake.
 
-There is no vertex normal information included in ShapeNet dataset, so it would cause some rendering issues. For simplicity, you can turn off smooth normal by turning on 'faceNormals' or generating normal by setting 'maxSmoothAngle' in rendering configuration file.
+Currently it cannot handle per-vertex normal or smooth group in ShapeNet obj. You can use 'maxSmoothAngle' to add some smoothness rendering effect.
 
 A sample rendering configuration render.xml:
 
@@ -20,9 +20,9 @@ A sample rendering configuration render.xml:
 <?xml version="1.0" encoding="utf-8"?>
 
 <scene version="0.5.0">
-	<shape type="obj">
+	<shape type="shapenet">
 		<string name="filename" value="ShapeNetCore.v1/02691156/5903b9eeb53f1f05a5a118bd15e6e34f/model.obj" />
-		<boolean name="faceNormals" value="true" />
+		<float name="maxSmoothAngle" value="75" />
 	</shape>
 	
 	<emitter type="constant" id="env">
