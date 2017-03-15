@@ -66,6 +66,12 @@ public:
 
 	std::vector<ShapeNetTriangle> m_triPool;
 
+	bool isGoodUV(int uv[3])
+	{
+		return uv[0] != uv[1] && uv[1] != uv[2] && uv[0] != uv[2] &&
+			uv[0] && uv[1] && uv[2];
+	}
+
 	bool checkAndAddTriangle(std::vector<ShapeNetTriangle>& triangles, ShapeNetTriangle& t)
 	{
 		bool find = false;
@@ -74,10 +80,21 @@ public:
 		{
 			if (tri == t)
 			{
-				find = true;
-				// double face exists, just assign the back side with material
-				tri.mtl[1] = t.mtl[0];
-
+				// double face exists
+				find = true;				
+				
+				if (isGoodUV(t.uv) && !isGoodUV(tri.uv))
+				{
+					// sometimes double-sided face contains bad tex coords
+					std::string temp = tri.mtl[0];
+					tri = t;
+					tri.mtl[1] = temp;
+				}
+				else
+				{
+					tri.mtl[1] = t.mtl[0];
+				}
+		
 				// well, flip face based on material name sorting
 				if (tri.mtl[1].compare(tri.mtl[0]) < 0)
 					tri.flip();
@@ -197,6 +214,8 @@ public:
 			else if (buf == "vt") {
 				Float u, v;
 				iss >> u >> v;
+				// fix texture orientation
+				v = -v;
 				texcoords.push_back(Point2(u, v));
 			}
 			else if (buf == "f") {
