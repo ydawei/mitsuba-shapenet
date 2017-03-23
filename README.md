@@ -24,13 +24,13 @@ A sample rendering configuration render.xml:
 		<string name="filename" value="ShapeNetCore.v1/02691156/5903b9eeb53f1f05a5a118bd15e6e34f/model.obj" />
 		<float name="maxSmoothAngle" value="75" />
 	</shape>
-	
+
 	<emitter type="constant" id="env">
 	</emitter>
 
 	<integrator type="bdpt" >
 	</integrator>
-	
+
 	<sensor type="perspective">
 		<transform name="toWorld">
 			<lookAt target="0,0,0" origin="1,1,1" up="0,1,0"/>
@@ -49,3 +49,8 @@ A sample rendering configuration render.xml:
 	</sensor>
 </scene>
 ```
+
+
+#### Download
+
+A compiled Windows x64 DLL can be downloaded [here](http://share.shijian.org.cn/shapenet/render/shapenet.dll) .
