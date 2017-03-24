@@ -39,7 +39,7 @@ public:
 		int uv[3];
 
 		std::string mtl[2];
-		
+
 		inline ShapeNetTriangle() {
 			memset(this, 0, sizeof(ShapeNetTriangle));
 
@@ -81,8 +81,8 @@ public:
 			if (tri == t)
 			{
 				// double face exists
-				find = true;				
-				
+				find = true;
+
 				if (isGoodUV(t.uv) && !isGoodUV(tri.uv))
 				{
 					// sometimes double-sided face contains bad tex coords
@@ -94,7 +94,7 @@ public:
 				{
 					tri.mtl[1] = t.mtl[0];
 				}
-		
+
 				// well, flip face based on material name sorting
 				if (tri.mtl[1].compare(tri.mtl[0]) < 0)
 					tri.flip();
@@ -111,7 +111,7 @@ public:
 	}
 
 	// group triangles by double-sided material
-	typedef std::map<std::string, std::map<std::string, std::vector<ShapeNetTriangle>>> TriGroup;
+	typedef std::map<std::string, std::map<std::string, std::vector<ShapeNetTriangle> > > TriGroup;
 
 	TriGroup groupTriByMtl(std::vector<ShapeNetTriangle> triangles)
 	{
@@ -121,7 +121,7 @@ public:
 		{
 			if (group.find(tri.mtl[0]) == group.end())
 			{
-				group[tri.mtl[0]] = std::map<std::string, std::vector<ShapeNetTriangle>>();
+				group[tri.mtl[0]] = std::map<std::string, std::vector<ShapeNetTriangle> >();
 			}
 
 			if (group[tri.mtl[0]].find(tri.mtl[1]) == group[tri.mtl[0]].end())
@@ -164,11 +164,11 @@ public:
 		fs::path path = fileResolver->resolve(props.getString("filename"));
 
 		m_name = path.stem().string();
-		
+
 		/* Object-space -> World-space transformation */
 		Transform objectToWorld = props.getTransform("toWorld", Transform());
 		Float maxSmoothAngle = props.getFloat("maxSmoothAngle", -1.0);
-		
+
 		/* Load the geometry */
 		Log(EInfo, "Loading geometry from \"%s\" ..", path.filename().string().c_str());
 		fs::ifstream is(path);
@@ -184,9 +184,9 @@ public:
 		std::vector<Point2> texcoords;
 		std::vector<ShapeNetTriangle> triangles;
 		std::vector<Vertex> vertexBuffer;
-		
+
 		std::string materialName;
-		
+
 		while (is.good() && !is.eof() && fetch_line(is, line)) {
 			std::istringstream iss(line);
 			if (!(iss >> buf))
@@ -221,7 +221,7 @@ public:
 			else if (buf == "f") {
 				std::string  tmp;
 				ShapeNetTriangle t;
-				
+
 				t.mtl[0] = materialName;
 				t.mtl[1] = materialName;
 
@@ -263,12 +263,12 @@ public:
 				{
 				}
 			}
-			
+
 			else {
 				/* Ignore */
 			}
 		}
-		
+
 		if (!triangles.empty())
 		{
 			createMesh0("model",
@@ -284,11 +284,11 @@ public:
 			for (size_t i = 0; i<m_meshes.size(); ++i)
 				m_meshes[i]->rebuildTopology(maxSmoothAngle);
 		}
-			
+
 
 		Log(EInfo, "Done with \"%s\" (took %i ms)", path.filename().string().c_str(), timer->getMilliseconds());
 	}
-	
+
 
 	ShapeNetOBJ(Stream *stream, InstanceManager *manager) : Shape(stream, manager) {
 		m_aabb = AABB(stream);
@@ -575,7 +575,7 @@ public:
 		std::vector<Vertex> &vertexBuffer,
 		const std::string &mtlName,
 		ref<BSDF>	bsdf,
-		bool faceNormal)	
+		bool faceNormal)
 	{
 		if (triangles.size() == 0)
 			return;
@@ -705,7 +705,7 @@ public:
 			{
 				ref<BSDF> bsdf2 = m_mtl[it2->first];
 
-				std::string name = formatString("%s-%s", it1->first, it2->first);
+				std::string name = formatString("%s-%s", it1->first.c_str(), it2->first.c_str());
 
 				ref<BSDF> bsdf;
 
@@ -723,7 +723,7 @@ public:
 				}
 				else
 				{
-					// create two-sided bsdf				
+					// create two-sided bsdf
 					Properties props;
 					props.setPluginName("twosided");
 
@@ -736,7 +736,7 @@ public:
 					m_mtl[name] = bsdf;
 				}
 
-				createMesh(formatString("%s-%i", targetName, counter),
+				createMesh(formatString("%s-%i", targetName.c_str(), counter),
 					vertices, normals, texcoords,
 					it2->second, objectToWorld, vertexBuffer,
 					name, bsdf, faceNormal);
@@ -879,7 +879,7 @@ private:
 	AABB m_aabb;
 
 	// store material from .mtl file
-	std::map<std::string, ref<BSDF>> m_mtl;
+	std::map<std::string, ref<BSDF> > m_mtl;
 };
 
 MTS_IMPLEMENT_CLASS_S(ShapeNetOBJ, false, Shape)
