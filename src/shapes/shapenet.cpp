@@ -40,9 +40,10 @@ public:
 
 		std::string mtl[2];
 
-		inline ShapeNetTriangle() {
-			memset(this, 0, sizeof(ShapeNetTriangle));
-
+		ShapeNetTriangle() {
+			p[0] = p[1] = p[2] = 0;
+			n[0] = n[1] = n[2] = 0;
+			uv[0] = uv[1] = uv[2] = 0;
 			mtl[0] = "";
 			mtl[1] = "";
 		}

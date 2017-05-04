@@ -14,43 +14,16 @@ If you meet the problem of missing header such as mitsuba_precompiled_header.hpp
 
 Currently it cannot handle per-vertex normal or smooth group in ShapeNet obj. You can use 'maxSmoothAngle' to add some smoothness rendering effect.
 
-A sample rendering configuration render.xml:
+#### Samples
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
+Rendering scripts and results can be found [here](shapenet). Images rendered with this ShapeNet importer(left) and Mitsuba OBJ importer(right):
 
-<scene version="0.5.0">
-	<shape type="shapenet">
-		<string name="filename" value="ShapeNetCore.v1/02691156/5903b9eeb53f1f05a5a118bd15e6e34f/model.obj" />
-		<float name="maxSmoothAngle" value="75" />
-	</shape>
+![alt text](shapenet/sample-car-shapenet.png "ShapeNet importer")
+![alt text](shapenet/sample-car-obj.png "Mitsuba OBJ importer")
 
-	<emitter type="constant" id="env">
-	</emitter>
-
-	<integrator type="bdpt" >
-	</integrator>
-
-	<sensor type="perspective">
-		<transform name="toWorld">
-			<lookAt target="0,0,0" origin="1,1,1" up="0,1,0"/>
-		</transform>
-		<string name="focalLength" value="50mm"/>
-
-		<sampler type="ldsampler">
-			<integer name="sampleCount" value="32"/>
-		</sampler>
-
-		<film type="ldrfilm">
-			<integer name="width" value="600"/>
-			<integer name="height" value="600"/>
-			<boolean name="banner" value="false"/>
-		</film>
-	</sensor>
-</scene>
-```
-
+![alt text](shapenet/sample-chair-shapenet.png "ShapeNet importer")
+![alt text](shapenet/sample-chair-obj.png "Mitsuba OBJ importer")
 
 #### Download
 
-A compiled Windows x64 DLL can be downloaded [here](http://share.shijian.org.cn/shapenet/render/shapenet.dll) .
+A compiled Windows x64 DLL can be downloaded [here](http://share.shijian.org.cn/shapenet/render/shapenet.dll) . Please put it under 'plugins' folder.
