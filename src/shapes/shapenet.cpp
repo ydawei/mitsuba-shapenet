@@ -701,10 +701,22 @@ public:
 		for (auto it1 = group.begin(); it1 != group.end(); ++it1)
 		{
 			ref<BSDF> bsdf1 = m_mtl[it1->first];
+			if (bsdf1 == NULL)
+			{
+				Properties props;
+				props.setPluginName("diffuse");
+				bsdf1 = static_cast<BSDF *> (PluginManager::getInstance()->createObject(MTS_CLASS(BSDF), props));
+			}
 
 			for (auto it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
 			{
 				ref<BSDF> bsdf2 = m_mtl[it2->first];
+				if (bsdf2 == NULL)
+				{
+					Properties props;
+					props.setPluginName("diffuse");
+					bsdf2 = static_cast<BSDF *> (PluginManager::getInstance()->createObject(MTS_CLASS(BSDF), props));
+				}
 
 				std::string name = formatString("%s-%s", it1->first.c_str(), it2->first.c_str());
 
